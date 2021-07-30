@@ -17,7 +17,7 @@ export function useState<T>(): StateController<T> {
   latestStateId += 1;
   const stateId = latestStateId;
   return {
-    get: () => STATE_RECORD[stateId] as T,
+    get: () => STATE_RECORD[stateId] as T | undefined,
     set: (value) => {
       STATE_RECORD[stateId] = value;
     },
