@@ -8,11 +8,6 @@ describe('useState', () => {
   });
 
   describe('get()', () => {
-    it('returns undefined if never set and has no initial state', () => {
-      const state = useState<string>();
-      expect(state.get()).toBeUndefined();
-    });
-
     it('returns initialstate on first get', () => {
       const state = useState<string>('initialState');
       expect(state.get()).toEqual('initialState');
