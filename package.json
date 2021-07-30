@@ -1,7 +1,7 @@
 {
-  "name": "trimin",
+  "name": "trimop",
   "version": "0.1.0",
-  "description": "Utility for TRee-shakeable, IMmutable and language INteroperable programming",
+  "description": "Utility for TRee-shakeable, IMmutable and language interOPerable programming",
   "author": "aabccd021 <aabccd021@gmail.com>",
   "license": "MIT",
   "files": [
@@ -70,8 +70,24 @@
       "plugin:prettier/recommended",
       "prettier"
     ],
+    "overrides": [
+      {
+        "files": [
+          "test/**/*.ts"
+        ],
+        "rules": {
+          "functional/no-return-void": "off",
+          "functional/functional-parameters": "off",
+          "functional/no-expression-statement": "off",
+          "no-null/no-null": "off"
+        }
+      }
+    ],
     "rules": {
-      "func-style": ["warn", "declaration"],
+      "func-style": [
+        "warn",
+        "declaration"
+      ],
       "eqeqeq": "warn",
       "max-len": [
         "warn",

@@ -38,6 +38,6 @@ export function Failed<F extends Failure>(failure: F): Failed<F> {
   return {
     _tag: 'failed',
     failure,
-    errorObject: process.env.FP_LITE_TEST === 'true' ? undefined : new Error(),
+    errorObject: process.env['FP_LITE_TEST'] === 'true' ? undefined : new Error(),
   };
 }
