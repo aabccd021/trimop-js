@@ -1,6 +1,6 @@
 {
   "name": "trimop",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Utility for TRee-shakeable, IMmutable and language interOPerable programming",
   "author": "aabccd021 <aabccd021@gmail.com>",
   "license": "MIT",
@@ -47,6 +47,10 @@
     ]
   },
   "eslintConfig": {
+    "ignorePatterns": [
+      "lib/**",
+      "dist/**"
+    ],
     "parser": "@typescript-eslint/parser",
     "plugins": [
       "@typescript-eslint",

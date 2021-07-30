@@ -1,4 +1,5 @@
 export * from './dict';
+export * from './dispose';
 export * from './either';
 export * from './failure';
 export * from './is-defined';
