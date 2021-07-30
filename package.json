@@ -1,6 +1,6 @@
 {
   "name": "trimop",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Utility for TRee-shakeable, IMmutable and language interOPerable programming",
   "author": "aabccd021 <aabccd021@gmail.com>",
   "license": "MIT",
