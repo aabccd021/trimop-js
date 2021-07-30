@@ -47,6 +47,10 @@
     ]
   },
   "eslintConfig": {
+    "ignorePatterns": [
+      "lib/**",
+      "dist/**"
+    ],
     "parser": "@typescript-eslint/parser",
     "plugins": [
       "@typescript-eslint",
