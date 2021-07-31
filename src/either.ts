@@ -17,8 +17,8 @@ export function Value<V>(value: V): Value<V> {
  */
 export type Failed<F extends Failure> = {
   readonly _tag: 'failed';
-  readonly failure: F;
   readonly errorObject?: Error;
+  readonly failure: F;
 };
 
 export function Failed<F extends Failure>(failure: F): Failed<F> {
