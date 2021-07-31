@@ -46,6 +46,10 @@
     "testEnvironment": "node",
     "testMatch": [
       "**/test/**/*.test.ts"
+    ],
+    "coveragePathIgnorePatterns": [
+      "src/failure/",
+      "src/either.ts"
     ]
   },
   "eslintConfig": {
