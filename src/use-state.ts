@@ -1,4 +1,3 @@
-/* eslint-disable functional/no-return-void */
 /* eslint-disable functional/no-let */
 /* eslint-disable functional/functional-parameters */
 /* eslint-disable functional/immutable-data */
@@ -10,7 +9,7 @@ let latestStateId = 0;
 
 export type StateController<T> = {
   readonly get: () => T;
-  readonly set: (value: T) => void;
+  readonly set: (value: T) => undefined;
 };
 
 export function useState<T>(initialValue: T): StateController<T> {
@@ -20,6 +19,7 @@ export function useState<T>(initialValue: T): StateController<T> {
     get: () => (STATE_RECORD[stateId] as T | undefined) ?? initialValue,
     set: (value) => {
       STATE_RECORD[stateId] = value;
+      return undefined;
     },
   };
 }
