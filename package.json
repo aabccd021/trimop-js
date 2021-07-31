@@ -32,6 +32,7 @@
     "eslint-plugin-no-null": "^1.0.2",
     "eslint-plugin-only-warn": "^1.0.2",
     "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
     "eslint-plugin-unused-imports": "^1.0.1",
     "jest": "^27.0.6",
     "prettier": "^2.2.1",
@@ -58,6 +59,7 @@
       "jest",
       "no-null",
       "only-warn",
+      "simple-import-sort",
       "unused-imports"
     ],
     "extends": [
@@ -78,16 +80,13 @@
           "test/**/*.ts"
         ],
         "rules": {
-          "functional/no-return-void": "off",
-          "functional/functional-parameters": "off",
-          "functional/no-expression-statement": "off",
-          "no-null/no-null": "off"
+          "no-null/no-null": "off",
+          "functional/prefer-readonly-type": "off"
         }
       }
     ],
     "rules": {
       "no-unsafe-optional-chaining": "warn",
-      "sort-keys": "warn",
       "no-use-before-define": "warn",
       "no-else-return": "warn",
       "no-useless-return": "warn",
@@ -98,11 +97,6 @@
       "prefer-arrow-callback": "warn",
       "prefer-destructuring": "warn",
       "prefer-template": "warn",
-      "sort-imports": "warn",
-      "func-style": [
-        "warn",
-        "declaration"
-      ],
       "eqeqeq": "warn",
       "max-len": [
         "warn",
@@ -113,16 +107,16 @@
           "ignoreTemplateLiterals": true
         }
       ],
-      "max-params": [
-        "warn",
-        3
-      ],
       "curly": [
         "warn",
         "all"
       ],
       "@typescript-eslint/no-unused-vars": "off",
       "unused-imports/no-unused-imports-ts": "warn",
+      "functional/no-return-void": "off",
+      "functional/no-expression-statement": "off",
+      "functional/functional-parameters": "off",
+      "functional/no-conditional-statement": "off",
       "unused-imports/no-unused-vars": [
         "warn",
         {
@@ -139,6 +133,8 @@
       "import/no-namespace": "warn",
       "import/no-useless-path-segments": "warn",
       "no-null/no-null": "warn",
+      "simple-import-sort/exports": "warn",
+      "simple-import-sort/imports": "warn",
       "prettier/prettier": [
         "warn",
         {
