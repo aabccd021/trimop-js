@@ -33,11 +33,3 @@ export function Failed<F extends Failure>(failure: F): Failed<F> {
  * Either
  */
 export type Either<F extends Failure, V> = Failed<F> | Value<V>;
-
-export function fold<F extends Failure, V, TResult>(
-  either: Either<F, V>,
-  ifFailed: (failure: Failed<F>) => TResult,
-  ifValue: (value: Value<V>) => TResult
-): TResult {
-  return either._tag === 'failed' ? ifFailed(either) : ifValue(either);
-}
