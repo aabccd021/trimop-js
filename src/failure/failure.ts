@@ -1,3 +1,3 @@
 export type Failure = {
-  readonly failureType: string;
+  readonly _failureType: string;
 };

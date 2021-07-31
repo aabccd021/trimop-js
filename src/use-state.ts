@@ -4,7 +4,7 @@
 /* eslint-disable functional/immutable-data */
 /* eslint-disable functional/no-expression-statement */
 
-const STATE_RECORD: Record<string, unknown> = {};
+const STATE_RECORD: Record<number, unknown> = {};
 
 let latestStateId = 0;
 
