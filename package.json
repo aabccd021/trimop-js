@@ -18,7 +18,9 @@
   "scripts": {
     "build": "rm -rf dist && tsc --build tsconfig.mjs.json && tsc --build tsconfig.cjs.json",
     "lint": "eslint . --ext ts",
-    "test": "jest --coverage --verbose"
+    "test": "jest --coverage --verbose",
+    "please": "yarn tsc --noEmit && yarn lint --fix && yarn test ",
+    "release": "git pull origin main --no-edit && npm version patch && git push"
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
