@@ -1,6 +1,6 @@
 {
   "name": "trimop",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Utility for TRee-shakeable, IMmutable and language interOPerable programming",
   "author": "aabccd021 <aabccd021@gmail.com>",
   "license": "MIT",
@@ -18,7 +18,9 @@
   "scripts": {
     "build": "rm -rf dist && tsc --build tsconfig.mjs.json && tsc --build tsconfig.cjs.json",
     "lint": "eslint . --ext ts",
-    "test": "jest --coverage --verbose"
+    "test": "jest --coverage --verbose",
+    "please": "yarn tsc --noEmit && yarn lint --fix && yarn test ",
+    "release": "git pull origin main --no-edit && npm version patch && git push"
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
@@ -46,6 +48,10 @@
     "testEnvironment": "node",
     "testMatch": [
       "**/test/**/*.test.ts"
+    ],
+    "coveragePathIgnorePatterns": [
+      "src/failure/",
+      "src/either.ts"
     ]
   },
   "eslintConfig": {
@@ -96,7 +102,6 @@
       "no-else-return": "warn",
       "no-useless-return": "warn",
       "no-undef-init": "warn",
-      "capitalized-comments": "warn",
       "no-useless-rename": "warn",
       "object-shorthand": "warn",
       "prefer-arrow-callback": "warn",
@@ -118,7 +123,6 @@
       ],
       "@typescript-eslint/no-unused-vars": "off",
       "unused-imports/no-unused-imports-ts": "warn",
-      "functional/no-return-void": "off",
       "functional/no-expression-statement": "off",
       "functional/functional-parameters": "off",
       "functional/no-conditional-statement": "off",

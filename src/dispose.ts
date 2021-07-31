@@ -1,2 +1,1 @@
-/* eslint-disable functional/no-return-void */
-export type Dispose = () => void;
+export type Dispose = () => undefined;
