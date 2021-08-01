@@ -20,7 +20,8 @@
     "lint": "eslint . --ext ts",
     "test": "jest --coverage --verbose",
     "please": "yarn tsc --noEmit && yarn lint --fix && yarn test ",
-    "release": "git pull origin main --no-edit && npm version patch && git push"
+    "release": "git pull origin main --no-edit && npm version patch && git push",
+    "pull-request": "git pull origin main --no-edit && npm version patch && git push && yarn open-cli https://github.com/aabccd021/kira-core/compare/main...$(git branch --show-current)"
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
@@ -39,6 +40,7 @@
     "eslint-plugin-typescript-sort-keys": "^1.7.0",
     "eslint-plugin-unused-imports": "^1.0.1",
     "jest": "^27.0.6",
+    "open-cli": "^7.0.0",
     "prettier": "^2.2.1",
     "ts-jest": "^27.0.4",
     "typescript": "^4.2.4"
@@ -142,6 +144,12 @@
       "import/no-named-default": "warn",
       "import/no-namespace": "warn",
       "import/no-useless-path-segments": "warn",
+      "import/no-unused-modules": [
+        "warn",
+        {
+          "unusedExports": true
+        }
+      ],
       "no-null/no-null": "warn",
       "simple-import-sort/exports": "warn",
       "simple-import-sort/imports": "warn",
