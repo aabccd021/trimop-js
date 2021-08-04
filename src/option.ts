@@ -22,7 +22,7 @@ export type Option<T> = None | Some<T>;
  *
  * @returns
  */
-export function none(): None {
+export function None(): None {
   return { _tag: 'None' };
 }
 
@@ -31,7 +31,7 @@ export function none(): None {
  * @param value
  * @returns
  */
-export function some<T>(value: T): Some<T> {
+export function Some<T>(value: T): Some<T> {
   return { _tag: 'Some', value };
 }
 
@@ -61,9 +61,9 @@ export function isSome<T>(option: Option<T>): option is Some<T> {
 export function optionFromNullable<T>(nullable: NonNullable<T> | undefined | null): Option<T> {
   // eslint-disable-next-line no-null/no-null
   if (nullable === undefined || nullable === null) {
-    return none();
+    return None();
   }
-  return some(nullable);
+  return Some(nullable);
 }
 
 /**

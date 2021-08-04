@@ -25,7 +25,7 @@ export type Either<F, V> = Left<F> | Right<V>;
  * @param right
  * @returns
  */
-export function right<T>(right: T): Right<T> {
+export function Right<T>(right: T): Right<T> {
   return { _tag: 'Right', right };
 }
 
@@ -34,7 +34,7 @@ export function right<T>(right: T): Right<T> {
  * @param left
  * @returns
  */
-export function left<F>(left: F): Left<F> {
+export function Left<F>(left: F): Left<F> {
   return {
     _tag: 'Left',
     errorObject: new Error(),
@@ -80,8 +80,8 @@ export function eitherMapRight<TResult, E, T>(
  */
 export function eitherArray<E, T>(arr: readonly Either<E, T>[]): Either<E, readonly T[]> {
   return arr.reduce<Either<E, readonly T[]>>(
-    (acc, el) => eitherMapRight(acc, (acc) => eitherMapRight(el, (el) => right([...acc, el]))),
-    right([])
+    (acc, el) => eitherMapRight(acc, (acc) => eitherMapRight(el, (el) => Right([...acc, el]))),
+    Right([])
   );
 }
 
@@ -98,9 +98,9 @@ export function eitherArrayFilter<E, T>(
   return arr.reduce<Either<E, readonly T[]>>(
     (acc, el) =>
       eitherMapRight(acc, (acc) =>
-        eitherMapRight(filter(el), (isEqual) => right(isEqual ? [...acc, el] : acc))
+        eitherMapRight(filter(el), (isEqual) => Right(isEqual ? [...acc, el] : acc))
       ),
-    right([])
+    Right([])
   );
 }
 
@@ -116,8 +116,8 @@ export function eitherArrayMap<TResult, E, T>(
 ): Either<E, readonly TResult[]> {
   return arr.reduce<Either<E, readonly TResult[]>>(
     (acc, el) =>
-      eitherMapRight(acc, (acc) => eitherMapRight(mapper(el), (mapped) => right([...acc, mapped]))),
-    right([])
+      eitherMapRight(acc, (acc) => eitherMapRight(mapper(el), (mapped) => Right([...acc, mapped]))),
+    Right([])
   );
 }
 
