@@ -1,49 +1,49 @@
 import {
   isNone,
   isSome,
-  none,
+  None,
   optionArrayMapSome,
   optionFold,
   optionFromNullable,
   optionMapSome,
-  some,
+  Some,
 } from '../src';
 
 describe('isNone', () => {
   it('returns true if given none', () => {
-    const either = none();
+    const either = None();
     expect(isNone(either)).toStrictEqual(true);
   });
 
   it('returns false if given some', () => {
-    const either = some('kira');
+    const either = Some('kira');
     expect(isNone(either)).toStrictEqual(false);
   });
 });
 
 describe('isSome', () => {
   it('returns true if given some', () => {
-    const either = some('kira');
+    const either = Some('kira');
     expect(isSome(either)).toStrictEqual(true);
   });
 
   it('returns false if given none', () => {
-    const either = none();
+    const either = None();
     expect(isSome(either)).toStrictEqual(false);
   });
 });
 
 describe('optionFromNullable', () => {
   it('returns some if given nonNullable', () => {
-    expect(optionFromNullable('kira')).toStrictEqual(some('kira'));
+    expect(optionFromNullable('kira')).toStrictEqual(Some('kira'));
   });
 
   it('returns none if given undefined', () => {
-    expect(optionFromNullable(undefined)).toStrictEqual(none());
+    expect(optionFromNullable(undefined)).toStrictEqual(None());
   });
 
   it('returns none if given null', () => {
-    expect(optionFromNullable(undefined)).toStrictEqual(none());
+    expect(optionFromNullable(undefined)).toStrictEqual(None());
   });
 });
 
@@ -51,33 +51,33 @@ describe('optionFold', () => {
   const mapIfNone = () => 'No name';
   const mapIfSome = (value: string) => `The name is ${value}`;
   it('returns mapped some if given some', () => {
-    const option = some('Kira');
+    const option = Some('Kira');
     expect(optionFold(option, mapIfNone, mapIfSome)).toStrictEqual('The name is Kira');
   });
 
   it('returns mapped none if given none', () => {
-    const option = none();
+    const option = None();
     expect(optionFold(option, mapIfNone, mapIfSome)).toStrictEqual('No name');
   });
 });
 
 describe('optionMapSome', () => {
-  const mapper = (value: string) => some(`The name is ${value}`);
+  const mapper = (value: string) => Some(`The name is ${value}`);
   it('returns mapped some if given some', () => {
-    const option = some('Kira');
-    expect(optionMapSome(option, mapper)).toStrictEqual(some('The name is Kira'));
+    const option = Some('Kira');
+    expect(optionMapSome(option, mapper)).toStrictEqual(Some('The name is Kira'));
   });
 
   it('returns none if given none', () => {
-    const option = none();
-    expect(optionMapSome(option, mapper)).toStrictEqual(none());
+    const option = None();
+    expect(optionMapSome(option, mapper)).toStrictEqual(None());
   });
 });
 
 describe('optionArrayMapSome', () => {
   it('maps some elements', () => {
     expect(
-      optionArrayMapSome([none(), some('kira'), none(), some('masumoto'), none()])
+      optionArrayMapSome([None(), Some('kira'), None(), Some('masumoto'), None()])
     ).toStrictEqual(['kira', 'masumoto']);
   });
 });
