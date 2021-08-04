@@ -1,8 +1,9 @@
 {
   "name": "trimop",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Utility for TRee-shakeable, IMmutable and language interOPerable programming",
   "author": "aabccd021 <aabccd021@gmail.com>",
+  "repository": "git@github.com:aabccd021/trimop-js.git",
   "license": "MIT",
   "files": [
     "dist"
@@ -20,7 +21,8 @@
     "lint": "eslint . --ext ts",
     "test": "jest --coverage --verbose",
     "please": "yarn tsc --noEmit && yarn lint --fix && yarn test ",
-    "release": "git pull origin main --no-edit && npm version patch && git push"
+    "release": "git pull origin main --no-edit && npm version patch && git push",
+    "pull-request": "git pull origin main --no-edit && npm version patch && git push && yarn open-cli https://github.com/aabccd021/trimop-js/compare/main...$(git branch --show-current)"
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
@@ -39,6 +41,7 @@
     "eslint-plugin-typescript-sort-keys": "^1.7.0",
     "eslint-plugin-unused-imports": "^1.0.1",
     "jest": "^27.0.6",
+    "open-cli": "^7.0.0",
     "prettier": "^2.2.1",
     "ts-jest": "^27.0.4",
     "typescript": "^4.2.4"
@@ -48,10 +51,6 @@
     "testEnvironment": "node",
     "testMatch": [
       "**/test/**/*.test.ts"
-    ],
-    "coveragePathIgnorePatterns": [
-      "src/failure/",
-      "src/either.ts"
     ]
   },
   "eslintConfig": {

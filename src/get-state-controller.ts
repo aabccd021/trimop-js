@@ -12,7 +12,7 @@ export type StateController<T> = {
   readonly set: (value: T) => undefined;
 };
 
-export function useState<T>(initialValue: T): StateController<T> {
+export function getStateController<T>(initialValue: T): StateController<T> {
   latestStateId += 1;
   const stateId = latestStateId;
   return {
