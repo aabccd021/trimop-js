@@ -131,11 +131,10 @@ export function eitherArrayMap<TResult, E, T>(
 export function eitherArrayReduce<TResult, E, T>(
   arr: readonly T[],
   initialValue: Either<E, TResult>,
-  reducer: (acc: TResult, value: T, key: string) => Either<E, TResult>
+  reducer: (acc: TResult, el: T) => Either<E, TResult>
 ): Either<E, TResult> {
-  return Object.entries(arr).reduce<Either<E, TResult>>(
-    (acc, [entryKey, entryValue]) =>
-      eitherMapRight(acc, (acc) => reducer(acc, entryValue, entryKey)),
+  return arr.reduce<Either<E, TResult>>(
+    (acc, el) => eitherMapRight(acc, (acc) => reducer(acc, el)),
     initialValue
   );
 }
