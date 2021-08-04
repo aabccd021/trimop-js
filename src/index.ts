@@ -1,3 +1,4 @@
+export * from './assert-never';
 export * from './dict';
 export * from './either';
 export * from './get-state-controller';
