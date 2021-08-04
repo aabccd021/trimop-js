@@ -51,9 +51,6 @@
     "testEnvironment": "node",
     "testMatch": [
       "**/test/**/*.test.ts"
-    ],
-    "coveragePathIgnorePatterns": [
-      "src/assert-never.ts"
     ]
   },
   "eslintConfig": {
