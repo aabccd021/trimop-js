@@ -93,3 +93,12 @@ export function optionMapSome<TResult, T>(
 ): Option<TResult> {
   return isNone(option) ? option : mapper(option.value);
 }
+
+/**
+ *
+ * @param optionArr
+ * @returns
+ */
+export function optionArrayMapSome<T>(optionArr: readonly Option<T>[]): readonly T[] {
+  return optionArr.filter(isSome).map(({ value }) => value);
+}
