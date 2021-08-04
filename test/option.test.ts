@@ -1,4 +1,13 @@
-import { isNone, isSome, none, optionFold, optionFromNullable, optionMapSome, some } from '../src';
+import {
+  isNone,
+  isSome,
+  none,
+  optionArrayMapSome,
+  optionFold,
+  optionFromNullable,
+  optionMapSome,
+  some,
+} from '../src';
 
 describe('isNone', () => {
   it('returns true if given none', () => {
@@ -62,5 +71,13 @@ describe('optionMapSome', () => {
   it('returns none if given none', () => {
     const option = none();
     expect(optionMapSome(option, mapper)).toStrictEqual(none());
+  });
+});
+
+describe('optionArrayMapSome', () => {
+  it('maps some elements', () => {
+    expect(
+      optionArrayMapSome([none(), some('kira'), none(), some('masumoto'), none()])
+    ).toStrictEqual(['kira', 'masumoto']);
   });
 });
