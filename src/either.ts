@@ -17,6 +17,7 @@ export type Left<E> = {
 
 /**
  * Either
+ * TODO: Result<Ok, Err>
  */
 export type Either<F, V> = Left<F> | Right<V>;
 
@@ -71,6 +72,20 @@ export function eitherMapRight<TResult, E, T>(
   mapper: (right: T) => Either<E, TResult>
 ): Either<E, TResult> {
   return isLeft(either) ? either : mapper(either.right);
+}
+
+/**
+ * TODO: eitherMatch
+ * @param either
+ * @param mapper
+ * @returns
+ */
+export function eitherFold<TResult, E = unknown, T = unknown>(
+  either: Either<E, T>,
+  onLeft: (left: E) => TResult,
+  onRight: (right: T) => TResult
+): TResult {
+  return isLeft(either) ? onLeft(either.left) : onRight(either.right);
 }
 
 /**

@@ -4,6 +4,7 @@ import {
   eitherArrayFilter,
   eitherArrayMap,
   eitherArrayReduce,
+  eitherFold,
   eitherMapRight,
   isLeft,
   isRight,
@@ -45,6 +46,21 @@ describe('eitherMapRight', () => {
   it('returns mapped right if given right', () => {
     const either = Right('kira');
     expect(eitherMapRight(either, mapper)).toStrictEqual(Right('name is kira'));
+  });
+});
+
+describe('eitherFold', () => {
+  const onLeft = (errorCode: number) => `error: ${errorCode}`;
+  const onRight = (data: string) => `data: ${data}`;
+
+  it('use onleft if given left', () => {
+    const either: Either<number, string> = Left(404);
+    expect(eitherFold(either, onLeft, onRight)).toStrictEqual('error: 404');
+  });
+
+  it('use onRight if given right', () => {
+    const either: Either<number, string> = Right('kira');
+    expect(eitherFold(either, onLeft, onRight)).toStrictEqual('data: kira');
   });
 });
 
