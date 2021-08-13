@@ -67,11 +67,21 @@ export function isLeft<E>(either: Either<E, unknown>): either is Left<E> {
  * @param mapper
  * @returns
  */
+export function eitherFlatten<E, T>(either: Either<E, Either<E, T>>): Either<E, T> {
+  return isLeft(either) ? either : either.right;
+}
+
+/**
+ *
+ * @param either
+ * @param mapper
+ * @returns
+ */
 export function eitherMapRight<TResult, E, T>(
   either: Either<E, T>,
-  mapper: (right: T) => Either<E, TResult>
+  mapper: (right: T) => TResult
 ): Either<E, TResult> {
-  return isLeft(either) ? either : mapper(either.right);
+  return isLeft(either) ? either : Right(mapper(either.right));
 }
 
 /**
@@ -95,7 +105,8 @@ export function eitherFold<TResult, E = unknown, T = unknown>(
  */
 export function eitherArray<E, T>(arr: readonly Either<E, T>[]): Either<E, readonly T[]> {
   return arr.reduce<Either<E, readonly T[]>>(
-    (acc, el) => eitherMapRight(acc, (acc) => eitherMapRight(el, (el) => Right([...acc, el]))),
+    (acc, el) =>
+      eitherFlatten(eitherMapRight(acc, (acc) => eitherMapRight(el, (el) => [...acc, el]))),
     Right([])
   );
 }
@@ -112,8 +123,10 @@ export function eitherArrayFilter<E, T>(
 ): Either<E, readonly T[]> {
   return arr.reduce<Either<E, readonly T[]>>(
     (acc, el) =>
-      eitherMapRight(acc, (acc) =>
-        eitherMapRight(filter(el), (isEqual) => Right(isEqual ? [...acc, el] : acc))
+      eitherFlatten(
+        eitherMapRight(acc, (acc) =>
+          eitherMapRight(filter(el), (isEqual) => (isEqual ? [...acc, el] : acc))
+        )
       ),
     Right([])
   );
@@ -131,7 +144,9 @@ export function eitherArrayMap<TResult, E, T>(
 ): Either<E, readonly TResult[]> {
   return arr.reduce<Either<E, readonly TResult[]>>(
     (acc, el) =>
-      eitherMapRight(acc, (acc) => eitherMapRight(mapper(el), (mapped) => Right([...acc, mapped]))),
+      eitherFlatten(
+        eitherMapRight(acc, (acc) => eitherMapRight(mapper(el), (mapped) => [...acc, mapped]))
+      ),
     Right([])
   );
 }
@@ -149,7 +164,7 @@ export function eitherArrayReduce<TResult, E, T>(
   reducer: (acc: TResult, el: T) => Either<E, TResult>
 ): Either<E, TResult> {
   return arr.reduce<Either<E, TResult>>(
-    (acc, el) => eitherMapRight(acc, (acc) => reducer(acc, el)),
+    (acc, el) => eitherFlatten(eitherMapRight(acc, (acc) => reducer(acc, el))),
     initialValue
   );
 }

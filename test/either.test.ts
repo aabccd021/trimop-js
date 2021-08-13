@@ -37,7 +37,7 @@ describe('isLeft', () => {
 });
 
 describe('eitherMapRight', () => {
-  const mapper = (value: string) => Right(`name is ${value}`);
+  const mapper = (value: string) => `name is ${value}`;
   it('returns left if given left', () => {
     const either = Left('invalid name error');
     expect(eitherMapRight(either, mapper)).toStrictEqual(Left('invalid name error'));

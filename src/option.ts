@@ -31,7 +31,7 @@ export function None(): None {
  * @param value
  * @returns
  */
-export function Some<T>(value: T): Some<T> {
+export function Some<T>(value: NonNullable<T>): Some<T> {
   return { _tag: 'Some', value };
 }
 
@@ -75,8 +75,8 @@ export function optionFromNullable<T>(nullable: NonNullable<T> | undefined | nul
  */
 export function optionFold<TResult, T>(
   option: Option<T>,
-  mapIfNone: () => TResult,
-  mapIfSome: (value: T) => TResult
+  mapIfNone: () => NonNullable<TResult>,
+  mapIfSome: (value: T) => NonNullable<TResult>
 ): TResult {
   return isNone(option) ? mapIfNone() : mapIfSome(option.value);
 }
@@ -89,9 +89,9 @@ export function optionFold<TResult, T>(
  */
 export function optionMapSome<TResult, T>(
   option: Option<T>,
-  mapper: (value: T) => Option<TResult>
+  mapper: (value: T) => NonNullable<TResult>
 ): Option<TResult> {
-  return isNone(option) ? option : mapper(option.value);
+  return isNone(option) ? option : Some(mapper(option.value));
 }
 
 /**

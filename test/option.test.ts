@@ -62,8 +62,8 @@ describe('optionFold', () => {
 });
 
 describe('optionMapSome', () => {
-  const mapper = (value: string) => Some(`The name is ${value}`);
-  it('returns mapped some if given some', () => {
+  const mapper = (value: string) => `The name is ${value}`;
+  it('returns mapped some if given some and mapped to TResult', () => {
     const option = Some('Kira');
     expect(optionMapSome(option, mapper)).toStrictEqual(Some('The name is Kira'));
   });
