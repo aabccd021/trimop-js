@@ -1,6 +1,7 @@
+// /* eslint-disable functional/no-return-void */
 // /* eslint-disable import/exports-last */
 // import { Dict } from '.';
-// import { isNone, None, Option, Some } from './option';
+// import { isNone, isSome, None, Option, Some } from './option';
 
 // /**
 //  *
@@ -8,7 +9,7 @@
 // // eslint-disable-next-line functional/no-mixed-type
 // export type _<T> = {
 //   readonly _: <TResult>(mapper: (t: T) => TResult) => _<TResult>;
-//   readonly value: T;
+//   readonly value: () => T;
 // };
 
 // /**
@@ -17,13 +18,15 @@
 // export function _<T>(t: T): _<T> {
 //   return {
 //     _: (mapper) => _(mapper(t)),
-//     value: t,
+//     value: () => t,
 //   };
 // }
 
 // export type OFold<TResult, T> = (option: Option<T>) => TResult;
 
 // export type OMapR<TResult, T> = (option: Option<T>) => Option<TResult>;
+
+// export type OIdentity<T> = (option: Option<T>) => Option<T>;
 
 // export function oFold<TResult, T>({
 //   none,
@@ -55,8 +58,15 @@
 //   return oFrom(dict[key]);
 // }
 
-// function handleColTrigger(actionTrigger: ActionTrigger): number {
-//   return 1;
+// function execColTrigger(_: ActionTrigger): void {}
+
+// function oIoSome<T>(effect: (t: T) => void): OIdentity<T> {
+//   return (o) => {
+//     if (isSome(o)) {
+//       effect(o.value);
+//     }
+//     return o;
+//   };
 // }
 
 // type ActionTrigger = Option<number>;
@@ -71,5 +81,7 @@
 
 // const x = _(dGet(dd, somekey))
 //   ._(oMapSome(({ onDelete }) => onDelete))
-//   ._(oMapSome(handleColTrigger))
-//   ._(oGetOrElse(1)).value;
+//   ._(oIoSome(execColTrigger))
+//   ._(oMapSome(() => 1))
+//   ._(oGetOrElse(1))
+//   .value();
