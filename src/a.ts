@@ -1,6 +1,6 @@
 // /* eslint-disable import/exports-last */
-// import { _, Dict, optionFromNullable as oFrom } from '.';
-// import { isNone, Option, Some } from './option';
+// import { Dict } from '.';
+// import { isNone, None, Option, Some } from './option';
 
 // /**
 //  *
@@ -39,20 +39,37 @@
 //   return (option) => (isNone(option) ? option : Some(some(option.value)));
 // }
 
-// export function oMapNone<T>(none:  T): OFold<T, T> {
+// export function oGetOrElse<T>(none: T): OFold<T, T> {
 //   return (option) => (isNone(option) ? none : option.value);
+// }
+
+// export function oFrom<T>(nullable: NonNullable<T> | undefined | null): Option<T> {
+//   // eslint-disable-next-line no-null/no-null
+//   if (nullable === undefined || nullable === null) {
+//     return None();
+//   }
+//   return Some(nullable);
 // }
 
 // export function dGet<T>(dict: Dict<T>, key: string): Option<T> {
 //   return oFrom(dict[key]);
 // }
 
-// const dd: Dict<number> = {
-//   foo: 10,
+// function handleColTrigger(actionTrigger: ActionTrigger): number {
+//   return 1;
+// }
+
+// type ActionTrigger = Option<number>;
+
+// type ColTrigger = {
+//   readonly onDelete: ActionTrigger;
 // };
+
+// const dd: Dict<ColTrigger> = {};
 
 // const somekey = 'foo';
 
-// const x = _(dGet(dd, somekey))._(
-// 	oMapNone()
-// ).value;
+// const x = _(dGet(dd, somekey))
+//   ._(oMapSome(({ onDelete }) => onDelete))
+//   ._(oMapSome(handleColTrigger))
+//   ._(oGetOrElse(1)).value;
