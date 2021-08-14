@@ -9,7 +9,7 @@
 // // eslint-disable-next-line functional/no-mixed-type
 // export type _<T> = {
 //   readonly _: <TResult>(mapper: (t: T) => TResult) => _<TResult>;
-//   readonly value: () => T;
+//   readonly value: T;
 // };
 
 // /**
@@ -18,7 +18,7 @@
 // export function _<T>(t: T): _<T> {
 //   return {
 //     _: (mapper) => _(mapper(t)),
-//     value: () => t,
+//     value: t,
 //   };
 // }
 
@@ -58,12 +58,24 @@
 //   return oFrom(dict[key]);
 // }
 
-// function execColTrigger(_: ActionTrigger): void {}
+// function execColTrigger(r: ActionTrigger): void {
+//   console.log('bb');
+//   console.log(JSON.stringify(r));
+// }
 
 // function oIoSome<T>(effect: (t: T) => void): OIdentity<T> {
 //   return (o) => {
 //     if (isSome(o)) {
 //       effect(o.value);
+//     }
+//     return o;
+//   };
+// }
+
+// function oIoNone<T>(effect: () => void): OIdentity<T> {
+//   return (o) => {
+//     if (isNone(o)) {
+//       effect();
 //     }
 //     return o;
 //   };
@@ -79,9 +91,15 @@
 
 // const somekey = 'foo';
 
+// console.log('rr');
+
 // const x = _(dGet(dd, somekey))
 //   ._(oMapSome(({ onDelete }) => onDelete))
 //   ._(oIoSome(execColTrigger))
-//   ._(oMapSome(() => 1))
-//   ._(oGetOrElse(1))
-//   .value();
+//   ._(oIoNone(() => console.log('kk')))
+//   ._(oMapSome(() => 2))
+//   ._(oGetOrElse(1)).value;
+
+// console.log(x);
+
+// console.log('aa');
