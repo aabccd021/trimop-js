@@ -1,41 +1,12 @@
-/**
- * Right
- */
-export type Right<T> = {
-  readonly _tag: 'Right';
-  readonly right: T;
-};
+import { none, some } from './option';
+import * as tuple from './tuple';
+import { Either, Left, Option, Right } from './type';
 
-/**
- * Left
- */
-export type Left<E> = {
-  readonly _tag: 'Left';
-  readonly errorObject: Error;
-  readonly left: E;
-};
-
-/**
- * Either
- * TODO: Result<Ok, Err>
- */
-export type Either<F, V> = Left<F> | Right<V>;
-
-/**
- *
- * @param right
- * @returns
- */
-export function Right<T>(right: T): Right<T> {
+export function right<A>(right: A): Right<A> {
   return { _tag: 'Right', right };
 }
 
-/**
- *
- * @param left
- * @returns
- */
-export function Left<F>(left: F): Left<F> {
+export function left<B>(left: B): Left<B> {
   return {
     _tag: 'Left',
     errorObject: new Error(),
@@ -61,110 +32,83 @@ export function isLeft<E>(either: Either<E, unknown>): either is Left<E> {
   return either._tag === 'Left';
 }
 
-/**
- *
- * @param either
- * @param mapper
- * @returns
- */
-export function eitherFlatten<E, T>(either: Either<E, Either<E, T>>): Either<E, T> {
-  return isLeft(either) ? either : either.right;
+// export function Do<E, T>(effect: (t: T) => void): Identity<Either<E, T>> {
+//   return (either) => {
+//     if (isRight(either)) {
+//       effect(either.right);
+//     }
+//     return either;
+//   };
+// }
+
+// export function DoLeft<E, T>(effect: (e: Left<E>) => void): EIdentity<E, T> {
+//   return (either) => {
+//     if (isLeft(either)) {
+//       effect(either);
+//     }
+//     return ither;
+//   };
+// }
+
+// export function Fold<TResult, E, T>({
+//   left,
+//   right,
+// }: {
+//   readonly left: (e: Left<E>) => TResult;
+//   readonly right: (t: T) => TResult;
+// }): EFold<TResult, E, T> {
+//   return (either) => (isLeft(either) ? left(either) : right(either.right));
+// }
+
+// export function ToRight<E, T>(mapper: (l: Left<E>) => T): EFold<T, E, T> {
+//   return (either) => (isLeft(either) ? mapper(either) : either.right);
+// }
+
+export function flatten<E, T>(e: Either<E, Either<E, T>>): Either<E, T> {
+  return isLeft(e) ? e : e.right;
 }
 
-/**
- *
- * @param either
- * @param mapper
- * @returns
- */
-export function eitherMapRight<TResult, E, T>(
-  either: Either<E, T>,
-  mapper: (right: T) => TResult
-): Either<E, TResult> {
-  return isLeft(either) ? either : Right(mapper(either.right));
+export type LeftTo<EResult, E> = (l: Left<E>) => Left<EResult>;
+
+export function leftTo<EResult, E>(mapper: (t: E) => EResult): LeftTo<EResult, E> {
+  return (l) => ({
+    _tag: 'Left',
+    errorObject: l.errorObject,
+    left: mapper(l.left),
+  });
 }
 
-/**
- * TODO: eitherMatch
- * @param either
- * @param mapper
- * @returns
- */
-export function eitherFold<TResult, E = unknown, T = unknown>(
-  either: Either<E, T>,
-  onLeft: (left: E) => TResult,
-  onRight: (right: T) => TResult
-): TResult {
-  return isLeft(either) ? onLeft(either.left) : onRight(either.right);
+export type EFold<TResult, E, T> = (either: Either<E, T>) => TResult;
+
+export type MapsLeft<EResult, E, T> = (either: Either<E, T>) => Either<EResult, T>;
+
+export type Maps<TResult, E, T> = (either: Either<E, T>) => Either<E, TResult>;
+
+export function mapLeft<EResult, E, T>(mapper: (l: E) => EResult): MapsLeft<EResult, E, T> {
+  return (either) => (isLeft(either) ? leftTo(mapper)(either) : either);
 }
 
-/**
- *
- * @param arr
- * @returns
- */
-export function eitherArray<E, T>(arr: readonly Either<E, T>[]): Either<E, readonly T[]> {
-  return arr.reduce<Either<E, readonly T[]>>(
-    (acc, el) =>
-      eitherFlatten(eitherMapRight(acc, (acc) => eitherMapRight(el, (el) => [...acc, el]))),
-    Right([])
-  );
+export function map<TResult, E, T>(mapper: (t: T) => TResult): Maps<TResult, E, T> {
+  return (either) => (isLeft(either) ? either : Right(mapper(either.right)));
 }
 
-/**
- *
- * @param arr
- * @param filter
- * @returns
- */
-export function eitherArrayFilter<E, T>(
-  arr: readonly T[],
-  filter: (t: T) => Either<E, boolean>
-): Either<E, readonly T[]> {
-  return arr.reduce<Either<E, readonly T[]>>(
-    (acc, el) =>
-      eitherFlatten(
-        eitherMapRight(acc, (acc) =>
-          eitherMapRight(filter(el), (isEqual) => (isEqual ? [...acc, el] : acc))
-        )
-      ),
-    Right([])
-  );
+export function compact2<E, B, A>([b, a]: readonly [Either<E, B>, Either<E, A>]): Either<
+  E,
+  readonly [B, A]
+> {
+  return isRight(b) ? (isRight(a) ? Right([b.right, a.right]) : a) : b;
 }
 
-/**
- *
- * @param arr
- * @param mapper
- * @returns
- */
-export function eitherArrayMap<TResult, E, T>(
-  arr: readonly T[],
-  mapper: (t: T) => Either<E, TResult>
-): Either<E, readonly TResult[]> {
-  return arr.reduce<Either<E, readonly TResult[]>>(
-    (acc, el) =>
-      eitherFlatten(
-        eitherMapRight(acc, (acc) => eitherMapRight(mapper(el), (mapped) => [...acc, mapped]))
-      ),
-    Right([])
-  );
+export function map2<T, E, A, B>(
+  mapper: (a: A, b: B) => T
+): (o: Either<E, readonly [A, B]>) => Either<E, T> {
+  return map(tuple.map2(mapper));
 }
 
-/**
- *
- * @param arr
- * @param reducer
- * @param initialValue
- * @returns
- */
-export function eitherArrayReduce<TResult, E, T>(
-  arr: readonly T[],
-  initialValue: Either<E, TResult>,
-  reducer: (acc: TResult, el: T) => Either<E, TResult>
-): Either<E, TResult> {
-  return arr.reduce<Either<E, TResult>>(
-    (acc, el) => eitherFlatten(eitherMapRight(acc, (acc) => reducer(acc, el))),
-    initialValue
-  );
+export function toOption<B, A>(e: Either<B, A>): Option<A> {
+  return isLeft(e) ? none : some(e.right);
+}
+
+export function getOrElse<E, T>(mapper: (l: Left<E>) => T): EFold<T, E, T> {
+  return (either) => (isLeft(either) ? mapper(either) : either.right);
 }
