@@ -1,5 +1,5 @@
 import * as O from './option';
-import { Dict, Identity, Option } from './type';
+import { Dict, Option } from './type';
 
 export type DEntry<T> = readonly [string, NonNullable<T>];
 
@@ -16,40 +16,32 @@ export function lookup<T>(key: string): (dict: Dict<T>) => Option<T> {
 }
 
 export function mapEntries<TR, T>(
-  mapper: (field: T, fieldName: string, index: number) => TR
+  mapper: (val: T, key: string, idx: number) => TR
 ): (dict: Dict<T>) => readonly TR[] {
-  return (dict) =>
-    Object.entries(dict).map(([fieldName, field], index) => mapper(field, fieldName, index));
+  return (dict) => Object.entries(dict).map(([key, val], idx) => mapper(val, key, idx));
 }
 
 export function filter<T>(
-  mapper: (field: T, fieldName: string, index: number) => boolean
-): Identity<Dict<T>> {
+  elFilter: (val: T, key: string, idx: number) => boolean
+): (d: Dict<T>) => Dict<T> {
   return (dict) =>
-    Object.fromEntries(
-      Object.entries(dict).filter(([fieldName, field], index) => mapper(field, fieldName, index))
-    );
+    Object.fromEntries(Object.entries(dict).filter(([key, val], idx) => elFilter(val, key, idx)));
 }
 
 export function mapValues<TR, T>(
-  mapper: (field: T, fieldName: string, index: number) => NonNullable<TR>
+  mapper: (val: T, key: string, idx: number) => NonNullable<TR>
 ): (dict: Dict<T>) => Dict<TR> {
   return (dict) =>
-    Object.fromEntries(
-      Object.entries(dict).map(([fieldName, field], index) => [
-        fieldName,
-        mapper(field, fieldName, index),
-      ])
-    );
+    Object.fromEntries(Object.entries(dict).map(([key, val], idx) => [key, mapper(val, key, idx)]));
 }
 
 export function reduce<TR, T>(
   initialState: TR,
-  reducer: (acc: TR, value: T, key: string, index: number) => TR
+  reducer: (acc: TR, value: T, key: string, idx: number) => TR
 ): (dict: Dict<T>) => TR {
   return (dict) =>
     Object.entries(dict).reduce(
-      (acc, [key, value], index) => reducer(acc, value, key, index),
+      (acc, [key, value], idx) => reducer(acc, value, key, idx),
       initialState
     );
 }
