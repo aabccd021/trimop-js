@@ -3,10 +3,6 @@ import * as O from './option';
 import * as P from './tuple';
 import { Either, Left, Option, Right, Tuple2, Tuple3, Tuple4 } from './type';
 
-function _isLeft<L, R>(e: Either<L, R>): e is Left<L> {
-  return e._tag === 'Left';
-}
-
 /**
  *
  */
@@ -33,32 +29,51 @@ export type Fn<L, R, T> = (e: Either<L, R>) => T;
 /**
  *
  */
+export function match<L, R, T>(
+  onLeft: (l: Left<L>) => T,
+  onRight: (r: Right<R>) => T
+): Fn<L, R, T> {
+  return (e) => (e._tag === 'Left' ? onLeft(e) : onRight(e));
+}
+
+/**
+ *
+ */
 export function flatten<L, R>(e: Either<L, Either<L, R>>): Either<L, R> {
-  return _isLeft(e) ? e : e.right;
+  return match<L, Either<L, R>, Either<L, R>>(
+    (l) => l,
+    (r) => r.right
+  )(e);
 }
 
 /**
  *
  */
 export function map<B, A, AResult>(f: (a: A) => AResult): Fn<B, A, Either<B, AResult>> {
-  return (either) => (_isLeft(either) ? either : right(f(either.right)));
+  return match<B, A, Either<B, AResult>>(
+    (l) => l,
+    (x) => right(f(x.right))
+  );
 }
 
 /**
  *
  */
 export function mapLeft<B, A, BResult>(f: (l: B) => BResult): Fn<B, A, Either<BResult, A>> {
-  return (either) =>
-    _isLeft(either)
-      ? { _tag: 'Left', errorObject: either.errorObject, left: f(either.left) }
-      : either;
+  return match<B, A, Either<BResult, A>>(
+    (l) => ({ _tag: 'Left', errorObject: l.errorObject, left: f(l.left) }),
+    (r) => r
+  );
 }
 
 /**
  *
  */
 export function fold<L, R, T>(onLeft: (e: L) => T, onRight: (a: R) => T): Fn<L, R, T> {
-  return (e) => (_isLeft(e) ? onLeft(e.left) : onRight(e.right));
+  return match<L, R, T>(
+    (l) => onLeft(l.left),
+    (r) => onRight(r.right)
+  );
 }
 
 /**
