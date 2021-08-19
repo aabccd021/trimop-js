@@ -3,12 +3,22 @@ import { _ } from './function';
 import * as O from './option';
 import { Either, Option } from './type';
 
-export type OEMap<TResult, E, T> = (task: Option<Either<E, T>>) => Option<Either<E, TResult>>;
+export type Fn<L, R, T> = (oe: Option<Either<L, R>>) => T;
 
-export function map<TResult, E, T>(mapper: (e: T) => TResult): OEMap<TResult, E, T> {
-  return O.map(E.map(mapper));
+/**
+ *
+ * @param f
+ * @returns
+ */
+export function map<L, R, T>(f: (r: R) => T): Fn<L, R, Option<Either<L, T>>> {
+  return O.map(E.map(f));
 }
 
-export function toOption<B, A>(e: Option<Either<B, A>>): Option<Option<A>> {
-  return _(e)._(O.map(E.toOption))._v();
+/**
+ *
+ * @param oe
+ * @returns
+ */
+export function toOption<L, R>(oe: Option<Either<L, R>>): Option<Option<R>> {
+  return _(oe)._(O.map(E.toOption))._v();
 }

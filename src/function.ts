@@ -1,5 +1,3 @@
-/* eslint-disable import/exports-last */
-
 export type Pipe<T> = {
   readonly _: <TResult>(mapper: (t: T) => TResult) => Pipe<TResult>;
   readonly _v: () => T;
@@ -23,4 +21,3 @@ export function flow<TEnd, TInit>(mapper: (t: TInit) => TEnd): Flow<TEnd, TInit>
     _v: () => mapper,
   };
 }
-

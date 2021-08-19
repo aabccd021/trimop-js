@@ -2,12 +2,22 @@ import * as O from './option';
 import * as TE from './task-either';
 import { Either, Option, Task } from './type';
 
-export type GetOrElse<E, T> = (ote: Option<Task<Either<E, T>>>) => Task<Either<E, T>>;
+export type Fn<L, R, T> = (ote: Option<Task<Either<L, R>>>) => T;
 
-export function getOrLeft<E, T>(mapper: () => E): GetOrElse<E, T> {
-  return O.getOrElse<Task<Either<E, T>>>(() => TE.left(mapper()));
+/**
+ *
+ * @param mapper
+ * @returns
+ */
+export function getOrLeft<L, R>(mapper: () => L): Fn<L, R, Task<Either<L, R>>> {
+  return O.getOrElse<Task<Either<L, R>>>(() => TE.left(mapper()));
 }
 
-export function getOrRight<E, T>(mapper: () => T): GetOrElse<E, T> {
-  return O.getOrElse<Task<Either<E, T>>>(() => TE.right(mapper()));
+/**
+ *
+ * @param mapper
+ * @returns
+ */
+export function getOrRight<L, R>(mapper: () => R): Fn<L, R, Task<Either<L, R>>> {
+  return O.getOrElse<Task<Either<L, R>>>(() => TE.right(mapper()));
 }
