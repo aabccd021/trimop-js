@@ -1,24 +1,24 @@
 /**
  *
  */
-export type Right<A> = {
+export type Right<R> = {
   readonly _tag: 'Right';
-  readonly right: A;
+  readonly right: R;
 };
 
 /**
  *
  */
-export type Left<E> = {
+export type Left<L> = {
   readonly _tag: 'Left';
   readonly errorObject: Error;
-  readonly left: E;
+  readonly left: L;
 };
 
 /**
  *
  */
-export type Either<E, A> = Left<E> | Right<A>;
+export type Either<L, R> = Left<L> | Right<R>;
 
 /**
  *
@@ -30,41 +30,52 @@ export declare type None = {
 /**
  *
  */
-export declare type Some<A> = {
+export declare type Some<S> = {
   readonly _tag: 'Some';
-  readonly value: A;
+  readonly value: S;
 };
 
 /**
  *
  */
-export type Option<A> = None | Some<A>;
+export type Option<S> = None | Some<S>;
 
 /**
  *
  */
-export type Task<A> = () => Promise<A>;
+export type Task<T> = () => Promise<T>;
 
 /**
  *
  */
-export type IO<A> = () => A;
+export type IO<I> = () => I;
 
 /**
  *
  */
-export type TaskEither<E, T> = Task<Either<E, T>>;
+export type TaskEither<L, R> = Task<Either<L, R>>;
 
 /**
  *
  */
-export type Reader<R, A> = (r: R) => A;
+export type Reader<D, R> = (r: D) => R;
 
+/**
+ *
+ */
 // eslint-disable-next-line functional/prefer-type-literal
-export interface Dict<V> {
-  readonly [index: string]: NonNullable<V>;
+export interface Dict<D> {
+  readonly [index: string]: NonNullable<D>;
 }
 
+/**
+ *
+ */
+export type DictEntry<D> = readonly [string, NonNullable<D>];
+
+/**
+ *
+ */
 export type Arr<A> = readonly A[];
 
 /**

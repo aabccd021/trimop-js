@@ -23,3 +23,4 @@ export function flow<TEnd, TInit>(mapper: (t: TInit) => TEnd): Flow<TEnd, TInit>
     _v: () => mapper,
   };
 }
+

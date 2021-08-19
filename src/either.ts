@@ -49,8 +49,8 @@ export function flatten<L, R>(e: Either<L, Either<L, R>>): Either<L, R> {
 /**
  *
  */
-export function map<B, A, AResult>(f: (a: A) => AResult): Fn<B, A, Either<B, AResult>> {
-  return match<B, A, Either<B, AResult>>(
+export function map<L, R, RResult>(f: (a: R) => RResult): Fn<L, R, Either<L, RResult>> {
+  return match<L, R, Either<L, RResult>>(
     (l) => l,
     (x) => right(f(x.right))
   );
@@ -59,8 +59,8 @@ export function map<B, A, AResult>(f: (a: A) => AResult): Fn<B, A, Either<B, ARe
 /**
  *
  */
-export function mapLeft<B, A, BResult>(f: (l: B) => BResult): Fn<B, A, Either<BResult, A>> {
-  return match<B, A, Either<BResult, A>>(
+export function mapLeft<L, R, LResult>(f: (l: L) => LResult): Fn<L, R, Either<LResult, R>> {
+  return match<L, R, Either<LResult, R>>(
     (l) => ({ _tag: 'Left', errorObject: l.errorObject, left: f(l.left) }),
     (r) => r
   );
@@ -79,50 +79,54 @@ export function fold<L, R, T>(onLeft: (e: L) => T, onRight: (a: R) => T): Fn<L, 
 /**
  *
  */
-export function getOrElse<B, A>(mapper: (l: B) => A): Fn<B, A, A> {
-  return fold(mapper, (r) => r);
+export function getOrElse<L, R>(f: (l: L) => R): Fn<L, R, R> {
+  return fold(f, (r) => r);
 }
 
 /**
  *
  */
-export function toOption<B, A>(): Fn<B, A, Option<A>> {
-  return fold(
-    () => O.none() as Option<A>,
-    (r) => O.some(r)
-  );
+export function toOption<L, R>(e: Either<L, R>): Option<R> {
+  return _(e)
+    ._(
+      fold(
+        () => O.none as Option<R>,
+        (r) => O.some(r)
+      )
+    )
+    ._v();
 }
 
 /**
  *
  */
-export function chain<AResult, B, A>(
-  f: (a: A) => Either<B, AResult>
-): Fn<B, A, Either<B, AResult>> {
+export function chain<L, R, RResult>(
+  f: (r: R) => Either<L, RResult>
+): Fn<L, R, Either<L, RResult>> {
   return (e) => _(e)._(map(f))._(flatten)._v();
 }
 
 /**
  *
  */
-export function map2<T, E, A, B>(f: (a: A, b: B) => T): Fn<E, Tuple2<A, B>, Either<E, T>> {
+export function map2<L, A, B, T>(f: (a: A, b: B) => T): Fn<L, Tuple2<A, B>, Either<L, T>> {
   return map(P.map2(f));
 }
 
 /**
  *
  */
-export function map3<T, E, A, B, C>(
+export function map3<L, A, B, C, T>(
   f: (a: A, b: B, c: C) => T
-): Fn<E, Tuple3<A, B, C>, Either<E, T>> {
+): Fn<L, Tuple3<A, B, C>, Either<L, T>> {
   return map(P.map3(f));
 }
 
 /**
  *
  */
-export function map4<T, E, A, B, C, D>(
+export function map4<L, A, B, C, D, T>(
   f: (a: A, b: B, c: C, d: D) => T
-): Fn<E, Tuple4<A, B, C, D>, Either<E, T>> {
+): Fn<L, Tuple4<A, B, C, D>, Either<L, T>> {
   return map(P.map4(f));
 }

@@ -5,9 +5,7 @@ export function some<T>(value: T): Some<T> {
   return { _tag: 'Some', value };
 }
 
-export function none(): None {
-  return { _tag: 'None' };
-}
+export const none: None = { _tag: 'None' };
 
 export function isNone(option: Option<unknown>): option is None {
   return option._tag === 'None';
