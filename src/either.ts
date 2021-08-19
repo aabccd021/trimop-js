@@ -33,8 +33,8 @@ export type Fn<T, L, R> = (e: Either<L, R>) => T;
 /**
  *
  */
-export function flatten<L, R>(): Fn<Either<L, R>, L, Either<L, R>> {
-  return (e) => (_isLeft(e) ? e : e.right);
+export function flatten<L, R>(e: Either<L, Either<L, R>>): Either<L, R> {
+  return _isLeft(e) ? e : e.right;
 }
 
 /**
@@ -84,7 +84,7 @@ export function toOption<B, A>(): Fn<Option<A>, B, A> {
 export function chain<AResult, B, A>(
   f: (a: A) => Either<B, AResult>
 ): Fn<Either<B, AResult>, B, A> {
-  return (either) => _(either)._(map(f))._(flatten())._v();
+  return (either) => _(either)._(map(f))._(flatten)._v();
 }
 
 /**

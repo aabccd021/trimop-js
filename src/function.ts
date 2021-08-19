@@ -23,3 +23,15 @@ export function flow<TEnd, TInit>(mapper: (t: TInit) => TEnd): Flow<TEnd, TInit>
     _val: () => mapper,
   };
 }
+
+export type Flowz<TInit, TPrev = unknown> = {
+  readonly _: <TNext>(mapper: (t: TPrev) => TNext) => Flow<TNext, TInit>;
+  readonly _val: () => (p: TInit) => TPrev;
+};
+
+export function initFlow<TInit>(mapper: (t: TInit) => any) {
+  return {
+    _: <T>(nextMapper: (t: any) => T) => flow<T, TInit>((z) => nextMapper(mapper(z))),
+    _val: () => mapper,
+  };
+}

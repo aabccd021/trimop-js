@@ -11,14 +11,13 @@ export function compact2<E, A, B>([a, b]: Tuple2<Either<E, A>, Either<E, B>>): E
 > {
   return _(a)
     ._(
-      E.map((a) =>
+      E.chain((a) =>
         _(b)
           ._(E.map((b) => [a, b] as Tuple2<A, B>))
           ._v()
       )
     )
     ._v();
-  // return E.isRight(a) ? (E.isRight(b) ? E.right([a.right, b.right]) : b) : a;
 }
 
 /**
@@ -29,17 +28,13 @@ export function compact3<E, A, B, C>([a, b, c]: Tuple3<
   Either<E, B>,
   Either<E, C>
 >): Either<E, Tuple3<A, B, C>> {
-  const x = _(a)
+  return _(a)
     ._(
-      E.map((a) =>
-        _([b, c] as Tuple2<Either<E, B>, Either<E, C>>)
-          ._(compact2)
-          ._(E.map(([b, c]) => [a, b, c]))
+      E.chain((a) =>
+        _(compact2([b, c]))
+          ._(E.map(([b, c]) => [a, b, c] as Tuple3<A, B, C>))
           ._v()
       )
     )
-    ._(E.flatten)
     ._v();
-  // const x = compact2([b, c]);
-  // E.isRight(a) ? (E.isRight(x) ? E.right([a.right, ...x.right]) : x) : a;
 }
