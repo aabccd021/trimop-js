@@ -61,8 +61,8 @@ export type TaskEither<E, T> = Task<Either<E, T>>;
 export type Reader<R, A> = (r: R) => A;
 
 // eslint-disable-next-line functional/prefer-type-literal
-export interface Dict<A> {
-  readonly [index: string]: NonNullable<A>;
+export interface Dict<V> {
+  readonly [index: string]: NonNullable<V>;
 }
 
 export type Arr<A> = readonly A[];
