@@ -28,7 +28,7 @@ export function left<L>(left: L): Left<L> {
 /**
  *
  */
-export type Fn<T, L, R> = (e: Either<L, R>) => T;
+export type Fn<L, R, T> = (e: Either<L, R>) => T;
 
 /**
  *
@@ -40,14 +40,14 @@ export function flatten<L, R>(e: Either<L, Either<L, R>>): Either<L, R> {
 /**
  *
  */
-export function map<AResult, B, A>(f: (a: A) => AResult): Fn<Either<B, AResult>, B, A> {
+export function map<B, A, AResult>(f: (a: A) => AResult): Fn<B, A, Either<B, AResult>> {
   return (either) => (_isLeft(either) ? either : right(f(either.right)));
 }
 
 /**
  *
  */
-export function mapLeft<BResult, B, A>(f: (l: B) => BResult): Fn<Either<BResult, A>, B, A> {
+export function mapLeft<B, A, BResult>(f: (l: B) => BResult): Fn<B, A, Either<BResult, A>> {
   return (either) =>
     _isLeft(either)
       ? { _tag: 'Left', errorObject: either.errorObject, left: f(either.left) }
@@ -57,21 +57,21 @@ export function mapLeft<BResult, B, A>(f: (l: B) => BResult): Fn<Either<BResult,
 /**
  *
  */
-export function fold<T, L, R>(onLeft: (e: L) => T, onRight: (a: R) => T): Fn<T, L, R> {
+export function fold<L, R, T>(onLeft: (e: L) => T, onRight: (a: R) => T): Fn<L, R, T> {
   return (e) => (_isLeft(e) ? onLeft(e.left) : onRight(e.right));
 }
 
 /**
  *
  */
-export function getOrElse<B, A>(mapper: (l: B) => A): Fn<A, B, A> {
+export function getOrElse<B, A>(mapper: (l: B) => A): Fn<B, A, A> {
   return fold(mapper, (r) => r);
 }
 
 /**
  *
  */
-export function toOption<B, A>(): Fn<Option<A>, B, A> {
+export function toOption<B, A>(): Fn<B, A, Option<A>> {
   return fold(
     () => O.none() as Option<A>,
     (r) => O.some(r)
@@ -83,14 +83,14 @@ export function toOption<B, A>(): Fn<Option<A>, B, A> {
  */
 export function chain<AResult, B, A>(
   f: (a: A) => Either<B, AResult>
-): Fn<Either<B, AResult>, B, A> {
-  return (either) => _(either)._(map(f))._(flatten)._v();
+): Fn<B, A, Either<B, AResult>> {
+  return (e) => _(e)._(map(f))._(flatten)._v();
 }
 
 /**
  *
  */
-export function map2<T, E, A, B>(f: (a: A, b: B) => T): Fn<Either<E, T>, E, Tuple2<A, B>> {
+export function map2<T, E, A, B>(f: (a: A, b: B) => T): Fn<E, Tuple2<A, B>, Either<E, T>> {
   return map(P.map2(f));
 }
 
@@ -99,7 +99,7 @@ export function map2<T, E, A, B>(f: (a: A, b: B) => T): Fn<Either<E, T>, E, Tupl
  */
 export function map3<T, E, A, B, C>(
   f: (a: A, b: B, c: C) => T
-): Fn<Either<E, T>, E, Tuple3<A, B, C>> {
+): Fn<E, Tuple3<A, B, C>, Either<E, T>> {
   return map(P.map3(f));
 }
 
@@ -108,6 +108,6 @@ export function map3<T, E, A, B, C>(
  */
 export function map4<T, E, A, B, C, D>(
   f: (a: A, b: B, c: C, d: D) => T
-): Fn<Either<E, T>, E, Tuple4<A, B, C, D>> {
+): Fn<E, Tuple4<A, B, C, D>, Either<E, T>> {
   return map(P.map4(f));
 }
