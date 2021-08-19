@@ -1,12 +1,23 @@
-import { none, some } from './option';
-import * as tuple from './tuple';
-import { Either, Left, Option, Right } from './type';
+import { _ } from './function';
+import * as O from './option';
+import * as P from './tuple';
+import { Either, Left, Option, Right, Tuple2, Tuple3, Tuple4 } from './type';
 
-export function right<A>(right: A): Right<A> {
+function _isLeft<L, R>(e: Either<L, R>): e is Left<L> {
+  return e._tag === 'Left';
+}
+
+/**
+ *
+ */
+export function right<R>(right: R): Right<R> {
   return { _tag: 'Right', right };
 }
 
-export function left<B>(left: B): Left<B> {
+/**
+ *
+ */
+export function left<L>(left: L): Left<L> {
   return {
     _tag: 'Left',
     errorObject: new Error(),
@@ -16,99 +27,87 @@ export function left<B>(left: B): Left<B> {
 
 /**
  *
- * @param either
- * @returns
  */
-export function isRight<T>(either: Either<unknown, T>): either is Right<T> {
-  return either._tag === 'Right';
+export type Fn<T, L, R> = (e: Either<L, R>) => T;
+
+/**
+ *
+ */
+export function flatten<L, R>(): Fn<Either<L, R>, L, Either<L, R>> {
+  return (e) => (_isLeft(e) ? e : e.right);
 }
 
 /**
  *
- * @param either
- * @returns
  */
-export function isLeft<E>(either: Either<E, unknown>): either is Left<E> {
-  return either._tag === 'Left';
+export function map<AResult, B, A>(f: (a: A) => AResult): Fn<Either<B, AResult>, B, A> {
+  return (either) => (_isLeft(either) ? either : right(f(either.right)));
 }
 
-// export function Do<E, T>(effect: (t: T) => void): Identity<Either<E, T>> {
-//   return (either) => {
-//     if (isRight(either)) {
-//       effect(either.right);
-//     }
-//     return either;
-//   };
-// }
-
-// export function DoLeft<E, T>(effect: (e: Left<E>) => void): EIdentity<E, T> {
-//   return (either) => {
-//     if (isLeft(either)) {
-//       effect(either);
-//     }
-//     return ither;
-//   };
-// }
-
-// export function Fold<TResult, E, T>({
-//   left,
-//   right,
-// }: {
-//   readonly left: (e: Left<E>) => TResult;
-//   readonly right: (t: T) => TResult;
-// }): EFold<TResult, E, T> {
-//   return (either) => (isLeft(either) ? left(either) : right(either.right));
-// }
-
-// export function ToRight<E, T>(mapper: (l: Left<E>) => T): EFold<T, E, T> {
-//   return (either) => (isLeft(either) ? mapper(either) : either.right);
-// }
-
-export function flatten<E, T>(e: Either<E, Either<E, T>>): Either<E, T> {
-  return isLeft(e) ? e : e.right;
+/**
+ *
+ */
+export function mapLeft<BResult, B, A>(f: (l: B) => BResult): Fn<Either<BResult, A>, B, A> {
+  return (either) =>
+    _isLeft(either)
+      ? { _tag: 'Left', errorObject: either.errorObject, left: f(either.left) }
+      : either;
 }
 
-export type LeftTo<EResult, E> = (l: Left<E>) => Left<EResult>;
-
-export function leftTo<EResult, E>(mapper: (t: E) => EResult): LeftTo<EResult, E> {
-  return (l) => ({
-    _tag: 'Left',
-    errorObject: l.errorObject,
-    left: mapper(l.left),
-  });
+/**
+ *
+ */
+export function fold<T, L, R>(onLeft: (e: L) => T, onRight: (a: R) => T): Fn<T, L, R> {
+  return (e) => (_isLeft(e) ? onLeft(e.left) : onRight(e.right));
 }
 
-export type EFold<TResult, E, T> = (either: Either<E, T>) => TResult;
-
-export type MapsLeft<EResult, E, T> = (either: Either<E, T>) => Either<EResult, T>;
-
-export type Maps<TResult, E, T> = (either: Either<E, T>) => Either<E, TResult>;
-
-export function mapLeft<EResult, E, T>(mapper: (l: E) => EResult): MapsLeft<EResult, E, T> {
-  return (either) => (isLeft(either) ? leftTo(mapper)(either) : either);
+/**
+ *
+ */
+export function getOrElse<B, A>(mapper: (l: B) => A): Fn<A, B, A> {
+  return fold(mapper, (r) => r);
 }
 
-export function map<TResult, E, T>(mapper: (t: T) => TResult): Maps<TResult, E, T> {
-  return (either) => (isLeft(either) ? either : Right(mapper(either.right)));
+/**
+ *
+ */
+export function toOption<B, A>(): Fn<Option<A>, B, A> {
+  return fold(
+    () => O.none() as Option<A>,
+    (r) => O.some(r)
+  );
 }
 
-export function compact2<E, B, A>([b, a]: readonly [Either<E, B>, Either<E, A>]): Either<
-  E,
-  readonly [B, A]
-> {
-  return isRight(b) ? (isRight(a) ? Right([b.right, a.right]) : a) : b;
+/**
+ *
+ */
+export function chain<AResult, B, A>(
+  f: (a: A) => Either<B, AResult>
+): Fn<Either<B, AResult>, B, A> {
+  return (either) => _(either)._(map(f))._(flatten())._v();
 }
 
-export function map2<T, E, A, B>(
-  mapper: (a: A, b: B) => T
-): (o: Either<E, readonly [A, B]>) => Either<E, T> {
-  return map(tuple.map2(mapper));
+/**
+ *
+ */
+export function map2<T, E, A, B>(f: (a: A, b: B) => T): Fn<Either<E, T>, E, Tuple2<A, B>> {
+  return map(P.map2(f));
 }
 
-export function toOption<B, A>(e: Either<B, A>): Option<A> {
-  return isLeft(e) ? none : some(e.right);
+/**
+ *
+ */
+export function map3<T, E, A, B, C>(
+  f: (a: A, b: B, c: C) => T
+): Fn<Either<E, T>, E, Tuple3<A, B, C>> {
+  return map(P.map3(f));
 }
 
-export function getOrElse<E, T>(mapper: (l: Left<E>) => T): EFold<T, E, T> {
-  return (either) => (isLeft(either) ? mapper(either) : either.right);
+/**
+ *
+ */
+export function map4<T, E, A, B, C, D>(
+  f: (a: A, b: B, c: C, d: D) => T
+): Fn<Either<E, T>, E, Tuple4<A, B, C, D>> {
+  return map(P.map4(f));
 }

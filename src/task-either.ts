@@ -19,7 +19,7 @@ export function map<AResult, B, A>(mapper: (a: A) => AResult): TEMap<AResult, B,
 
 export function flatten<E, T>(e: Task<Either<E, Task<Either<E, T>>>>): Task<Either<E, T>> {
   return _(e)
-    ._(T.map((e) => (E.isLeft(e) ? Task(e) : e.right)))
+    ._(T.map((e) => (E._isLeft(e) ? Task(e) : e.right)))
     ._(T.flatten)
     ._v();
 }
