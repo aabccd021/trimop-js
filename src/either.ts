@@ -40,10 +40,14 @@ export function match<L, R, T>(
  *
  */
 export function flatten<L, R>(e: Either<L, Either<L, R>>): Either<L, R> {
-  return match<L, Either<L, R>, Either<L, R>>(
-    (l) => l,
-    (r) => r.right
-  )(e);
+  return _(e)
+    ._(
+      match(
+        (l) => l,
+        (r) => r.right
+      )
+    )
+    ._v();
 }
 
 /**

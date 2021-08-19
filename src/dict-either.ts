@@ -8,11 +8,11 @@ import { Dict, Either } from './type';
 export function compact<E, T>(de: Dict<Either<E, NonNullable<T>>>): Either<E, Dict<T>> {
   return _(de)
     ._(
-      D.reduce(E.right({}) as Either<E, Dict<T>>, (acc, value, key) =>
+      D.reduce(E.right({}) as Either<E, Dict<T>>, (acc, eVal, key) =>
         _(acc)
-          ._(P.bind2(() => value))
+          ._(P.bind2(() => eVal))
           ._(PE.compact2)
-          ._(E.map2((acc, value) => ({ ...acc, [key]: value })))
+          ._(E.map2((acc, val) => ({ ...acc, [key]: val })))
           ._v()
       )
     )

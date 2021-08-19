@@ -6,8 +6,8 @@ import { Dict, DictEntry, Option } from './type';
  * @param key
  * @returns
  */
-export function createEntry<D>(key: string): (value: NonNullable<D>) => DictEntry<D> {
-  return (value) => [key, value];
+export function createEntry<D>(key: string): (val: NonNullable<D>) => DictEntry<D> {
+  return (val) => [key, val];
 }
 
 /**
@@ -30,7 +30,7 @@ export type Fn<D, T> = (dict: Dict<D>) => T;
  * @returns
  */
 export function lookup<D>(key: string): Fn<D, Option<D>> {
-  return (dict) => O.fromNullable(dict[key]);
+  return (d) => O.fromNullable(d[key]);
 }
 
 /**
@@ -39,7 +39,7 @@ export function lookup<D>(key: string): Fn<D, Option<D>> {
  * @returns
  */
 export function mapEntries<V, T>(f: (val: V, key: string, idx: number) => T): Fn<V, readonly T[]> {
-  return (dict) => Object.entries(dict).map(([key, val], idx) => f(val, key, idx));
+  return (d) => Object.entries(d).map(([key, val], idx) => f(val, key, idx));
 }
 
 /**
@@ -48,8 +48,7 @@ export function mapEntries<V, T>(f: (val: V, key: string, idx: number) => T): Fn
  * @returns
  */
 export function filter<V>(f: (val: V, key: string, idx: number) => boolean): Fn<V, Dict<V>> {
-  return (dict) =>
-    Object.fromEntries(Object.entries(dict).filter(([key, val], idx) => f(val, key, idx)));
+  return (d) => Object.fromEntries(Object.entries(d).filter(([key, val], idx) => f(val, key, idx)));
 }
 
 /**
@@ -59,9 +58,9 @@ export function filter<V>(f: (val: V, key: string, idx: number) => boolean): Fn<
  */
 export function mapValues<V, T>(
   f: (val: V, key: string, idx: number) => NonNullable<T>
-): (dict: Dict<V>) => Dict<T> {
-  return (dict) =>
-    Object.fromEntries(Object.entries(dict).map(([key, val], idx) => [key, f(val, key, idx)]));
+): Fn<V, Dict<T>> {
+  return (d) =>
+    Object.fromEntries(Object.entries(d).map(([key, val], idx) => [key, f(val, key, idx)]));
 }
 
 /**
@@ -72,11 +71,8 @@ export function mapValues<V, T>(
  */
 export function reduce<V, T>(
   initialAcc: T,
-  reducer: (acc: T, value: V, key: string, idx: number) => T
-): (dict: Dict<V>) => T {
-  return (dict) =>
-    Object.entries(dict).reduce(
-      (acc, [key, value], idx) => reducer(acc, value, key, idx),
-      initialAcc
-    );
+  reducer: (acc: T, val: V, key: string, idx: number) => T
+): Fn<V, T> {
+  return (d) =>
+    Object.entries(d).reduce((acc, [key, val], idx) => reducer(acc, val, key, idx), initialAcc);
 }
