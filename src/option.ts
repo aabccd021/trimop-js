@@ -32,22 +32,6 @@ export function fold<S, T>(onNone: () => T, onSome: (s: S) => T): Fn<S, T> {
 
 /**
  *
- * @param o
- * @returns
- */
-export function flatten<T>(o: Option<Option<T>>): Option<T> {
-  return _(o)
-    ._(
-      fold(
-        () => none,
-        (v) => v
-      )
-    )
-    ._v();
-}
-
-/**
- *
  * @param f
  * @returns
  */
@@ -64,7 +48,34 @@ export function map<S, T>(f: (s: S) => T): Fn<S, Option<T>> {
  * @returns
  */
 export function chain<T, S>(f: (s: S) => Option<T>): Fn<S, Option<T>> {
-  return (o) => _(o)._(map(f))._(flatten)._v();
+  return (o) =>
+    _(o)
+      ._(map(f))
+      ._(
+        fold(
+          () => none,
+          (v) => v
+        )
+      )
+      ._v();
+}
+
+/**
+ *
+ * @param f
+ * @returns
+ */
+export function chain2<T, S>(f: (s: S) => Option<Option<T>>): Fn<S, Option<T>> {
+  return (o) =>
+    _(o)
+      ._(chain(f))
+      ._(
+        fold(
+          () => none,
+          (v) => v
+        )
+      )
+      ._v();
 }
 
 /**

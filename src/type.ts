@@ -11,7 +11,7 @@ export type Right<R> = {
  */
 export type Left<L> = {
   readonly _tag: 'Left';
-  readonly errorObject: Error;
+  readonly errObj: Error;
   readonly left: L;
 };
 

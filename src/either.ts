@@ -16,7 +16,7 @@ export function right<R>(right: R): Right<R> {
 export function left<L>(left: L): Left<L> {
   return {
     _tag: 'Left',
-    errorObject: new Error(),
+    errObj: new Error(),
     left,
   };
 }
@@ -51,7 +51,7 @@ export function map<L, R, RResult>(f: (a: R) => RResult): Fn<L, R, Either<L, RRe
  */
 export function mapLeft<L, R, LResult>(f: (l: L) => LResult): Fn<L, R, Either<LResult, R>> {
   return match<L, R, Either<LResult, R>>(
-    (l) => ({ _tag: 'Left', errorObject: l.errorObject, left: f(l.left) }),
+    (l) => ({ _tag: 'Left', errObj: l.errObj, left: f(l.left) }),
     (r) => r
   );
 }
