@@ -51,7 +51,7 @@ export function map4<A, B, C, D, E>(
  * @param f
  * @returns
  */
-export function bind2<A, B>(f: (b: A) => B): (t: A) => Tuple2<A, B> {
+export function append2<A, B>(f: (b: A) => B): (t: A) => Tuple2<A, B> {
   return (b) => [b, f(b)];
 }
 
@@ -60,7 +60,7 @@ export function bind2<A, B>(f: (b: A) => B): (t: A) => Tuple2<A, B> {
  * @param f
  * @returns
  */
-export function bind3<A, B, C>(f: (a: A, b: B) => C): (t: Tuple2<A, B>) => Tuple3<A, B, C> {
+export function append3<A, B, C>(f: (a: A, b: B) => C): (t: Tuple2<A, B>) => Tuple3<A, B, C> {
   return (t) => [...t, f(...t)];
 }
 
@@ -69,8 +69,37 @@ export function bind3<A, B, C>(f: (a: A, b: B) => C): (t: Tuple2<A, B>) => Tuple
  * @param f
  * @returns
  */
-export function bind4<A, B, C, D>(
+export function append4<A, B, C, D>(
   f: (a: A, b: B, c: C) => D
 ): (t: Tuple3<A, B, C>) => Tuple4<A, B, C, D> {
   return (t) => [...t, f(...t)];
+}
+
+/**
+ *
+ * @param f
+ * @returns
+ */
+export function prepend2<A, B>(f: (b: B) => A): (t: B) => Tuple2<A, B> {
+  return (b) => tuple2(f(b), b);
+}
+
+/**
+ *
+ * @param f
+ * @returns
+ */
+export function prepend3<A, B, C>(f: (b: B, c: C) => A): (t: Tuple2<B, C>) => Tuple3<A, B, C> {
+  return (b) => tuple3(f(...b), ...b);
+}
+
+/**
+ *
+ * @param f
+ * @returns
+ */
+export function prepend4<A, B, C, D>(
+  f: (b: B, c: C, d: D) => A
+): (t: Tuple3<B, C, D>) => Tuple4<A, B, C, D> {
+  return (b) => tuple4(f(...b), ...b);
 }

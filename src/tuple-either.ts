@@ -1,19 +1,20 @@
 import * as E from './either';
 import { _ } from './function';
+import * as P from './tuple';
 import { Either, Tuple2, Tuple3, Tuple4 } from './type';
 
 /**
  *
  */
-export function compact2<E, A, B>([a, b]: Tuple2<Either<E, A>, Either<E, B>>): Either<
+export function compact2<E, A, B>([a, r]: Tuple2<Either<E, A>, Either<E, B>>): Either<
   E,
   Tuple2<A, B>
 > {
   return _(a)
     ._(
       E.chain((a) =>
-        _(b)
-          ._(E.map((b) => [a, b] as Tuple2<A, B>))
+        _(r)
+          ._(E.map((r) => P.tuple2(a, r)))
           ._v()
       )
     )
@@ -23,7 +24,7 @@ export function compact2<E, A, B>([a, b]: Tuple2<Either<E, A>, Either<E, B>>): E
 /**
  *
  */
-export function compact3<E, A, B, C>([a, b, c]: Tuple3<
+export function compact3<E, A, B, C>([a, ...r]: Tuple3<
   Either<E, A>,
   Either<E, B>,
   Either<E, C>
@@ -31,8 +32,9 @@ export function compact3<E, A, B, C>([a, b, c]: Tuple3<
   return _(a)
     ._(
       E.chain((a) =>
-        _(compact2([b, c]))
-          ._(E.map(([b, c]) => [a, b, c] as Tuple3<A, B, C>))
+        _(P.tuple2(...r))
+          ._(compact2)
+          ._(E.map((r) => P.tuple3(a, ...r)))
           ._v()
       )
     )
@@ -42,7 +44,7 @@ export function compact3<E, A, B, C>([a, b, c]: Tuple3<
 /**
  *
  */
-export function compact4<E, A, B, C, D>([a, b, c, d]: Tuple4<
+export function compact4<E, A, B, C, D>([a, ...r]: Tuple4<
   Either<E, A>,
   Either<E, B>,
   Either<E, C>,
@@ -51,8 +53,9 @@ export function compact4<E, A, B, C, D>([a, b, c, d]: Tuple4<
   return _(a)
     ._(
       E.chain((a) =>
-        _(compact3([b, c, d]))
-          ._(E.map(([b, c, d]) => [a, b, c, d] as Tuple4<A, B, C, D>))
+        _(P.tuple3(...r))
+          ._(compact3)
+          ._(E.map((r) => P.tuple4(a, ...r)))
           ._v()
       )
     )
