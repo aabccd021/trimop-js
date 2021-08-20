@@ -39,20 +39,6 @@ export function match<L, R, T>(
 /**
  *
  */
-export function flatten<L, R>(e: Either<L, Either<L, R>>): Either<L, R> {
-  return _(e)
-    ._(
-      match(
-        (l) => l,
-        (r) => r.right
-      )
-    )
-    ._v();
-}
-
-/**
- *
- */
 export function map<L, R, RResult>(f: (a: R) => RResult): Fn<L, R, Either<L, RResult>> {
   return match<L, R, Either<L, RResult>>(
     (l) => l,
@@ -107,7 +93,36 @@ export function toOption<L, R>(e: Either<L, R>): Option<R> {
 export function chain<L, R, RResult>(
   f: (r: R) => Either<L, RResult>
 ): Fn<L, R, Either<L, RResult>> {
-  return (e) => _(e)._(map(f))._(flatten)._v();
+  return (e) =>
+    _(e)
+      ._(map(f))
+      ._(
+        match(
+          (l) => l,
+          (r) => r.right
+        )
+      )
+      ._v();
+}
+
+/**
+ *
+ */
+export function chain2<L, R, RResult>(
+  f: (r: R) => Either<L, Either<L, RResult>>
+): Fn<L, R, Either<L, RResult>> {
+  return (e) =>
+    _(e)
+      ._(map(f))
+      ._(
+        chain(
+          match(
+            (l) => l,
+            (r) => r.right
+          )
+        )
+      )
+      ._v();
 }
 
 /**
