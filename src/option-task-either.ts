@@ -6,18 +6,18 @@ export type Fn<L, R, T> = (ote: Option<Task<Either<L, R>>>) => T;
 
 /**
  *
- * @param mapper
+ * @param f
  * @returns
  */
-export function getOrLeft<L, R>(mapper: () => L): Fn<L, R, Task<Either<L, R>>> {
-  return O.getOrElse<Task<Either<L, R>>>(() => TE.left(mapper()));
+export function getOrLeft<L, R>(f: () => L): Fn<L, R, Task<Either<L, R>>> {
+  return O.getOrElse<Task<Either<L, R>>>(() => TE.left(f()));
 }
 
 /**
  *
- * @param mapper
+ * @param f
  * @returns
  */
-export function getOrRight<L, R>(mapper: () => R): Fn<L, R, Task<Either<L, R>>> {
-  return O.getOrElse<Task<Either<L, R>>>(() => TE.right(mapper()));
+export function getOrRight<L, R>(f: () => R): Fn<L, R, Task<Either<L, R>>> {
+  return O.getOrElse<Task<Either<L, R>>>(() => TE.right(f()));
 }

@@ -1,23 +1,23 @@
 export type Pipe<T> = {
-  readonly _: <TResult>(mapper: (t: T) => TResult) => Pipe<TResult>;
+  readonly _: <TResult>(f: (t: T) => TResult) => Pipe<TResult>;
   readonly _v: () => T;
 };
 
 export function _<T>(t: T): Pipe<T> {
   return {
-    _: (mapper) => _(mapper(t)),
+    _: (f) => _(f(t)),
     _v: () => t,
   };
 }
 
 export type Flow<TPar, TInit> = {
-  readonly _: <TRet>(mapper: (t: TPar) => TRet) => Flow<TRet, TInit>;
+  readonly _: <TRet>(f: (t: TPar) => TRet) => Flow<TRet, TInit>;
   readonly _v: (p: TInit) => TPar;
 };
 
-export function flow<TEnd, TInit>(mapper: (t: TInit) => TEnd): Flow<TEnd, TInit> {
+export function flow<TEnd, TInit>(f: (t: TInit) => TEnd): Flow<TEnd, TInit> {
   return {
-    _: (nextMapper) => flow((z) => nextMapper(mapper(z))),
-    _v: mapper,
+    _: (nextMapper) => flow((t) => nextMapper(f(t))),
+    _v: f,
   };
 }

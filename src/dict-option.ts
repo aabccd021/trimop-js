@@ -3,8 +3,19 @@ import { _ } from './function';
 import * as O from './option';
 import { Dict, Option } from './type';
 
-export function compact<T>(d: Dict<Option<NonNullable<T>>>): Dict<T> {
+export function compact<S>(d: Dict<Option<NonNullable<S>>>): Dict<S> {
   return _(d)
-    ._(D.reduce({}, (acc, oVal, key) => (O.isNone(oVal) ? acc : { ...acc, [key]: oVal.value })))
+    ._(
+      D.reduce({}, (acc, oVal, key) =>
+        _(oVal)
+          ._(
+            O.fold(
+              () => acc,
+              (val) => ({ ...acc, [key]: val })
+            )
+          )
+          ._v()
+      )
+    )
     ._v();
 }

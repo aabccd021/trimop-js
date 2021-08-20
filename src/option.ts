@@ -6,7 +6,7 @@ import { None, Option, Some } from './type';
  * @param value
  * @returns
  */
-export function some<S>(value: S): Some<S> {
+export function some<S>(value: NonNullable<S>): Some<S> {
   return { _tag: 'Some', value };
 }
 
@@ -14,6 +14,14 @@ export function some<S>(value: S): Some<S> {
  *
  */
 export const none: None = { _tag: 'None' };
+
+/**
+ *
+ */
+export function fromNullable<S>(t: NonNullable<S> | null | undefined): Option<S> {
+  // eslint-disable-next-line no-null/no-null
+  return t === null || t === undefined ? none : some(t);
+}
 
 /**
  *
@@ -35,7 +43,7 @@ export function fold<S, T>(onNone: () => T, onSome: (s: S) => T): Fn<S, T> {
  * @param f
  * @returns
  */
-export function map<S, T>(f: (s: S) => T): Fn<S, Option<T>> {
+export function map<S, T>(f: (s: S) => NonNullable<T>): Fn<S, Option<T>> {
   return fold<S, Option<T>>(
     () => none,
     (s) => some(f(s))

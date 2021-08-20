@@ -76,7 +76,7 @@ export function getOrElse<L, R>(f: (l: L) => R): Fn<L, R, R> {
 /**
  *
  */
-export function toOption<L, R>(e: Either<L, R>): Option<R> {
+export function toOption<L, R>(e: Either<L, NonNullable<R>>): Option<R> {
   return _(e)
     ._(
       fold(

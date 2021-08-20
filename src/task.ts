@@ -27,11 +27,11 @@ export type Maps<TResult, T> = (t: y.Task<T>) => y.Task<TResult>;
 
 /**
  *
- * @param mapper
+ * @param f
  * @returns
  */
-export function map<TResult, T>(mapper: (t: T) => TResult): Maps<TResult, T> {
-  return (task) => () => task().then(mapper);
+export function map<TResult, T>(f: (t: T) => TResult): Maps<TResult, T> {
+  return (task) => () => task().then(f);
 }
 
 /**

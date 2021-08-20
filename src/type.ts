@@ -32,7 +32,7 @@ export declare type None = {
  */
 export declare type Some<S> = {
   readonly _tag: 'Some';
-  readonly value: S;
+  readonly value: NonNullable<S>;
 };
 
 /**
