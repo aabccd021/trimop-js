@@ -13,6 +13,13 @@ export function right<R>(right: R): Right<R> {
 /**
  *
  */
+export function rightE<L, R>(right: R): Either<L, R> {
+  return { _tag: 'Right', right };
+}
+
+/**
+ *
+ */
 export function left<L>(left: L): Left<L> {
   return {
     _tag: 'Left',
@@ -78,12 +85,8 @@ export function getOrElse<L, R>(f: (l: L) => R): Fn<L, R, R> {
  */
 export function toOption<L, R>(e: Either<L, NonNullable<R>>): Option<R> {
   return _(e)
-    ._(
-      fold(
-        () => O.none as Option<R>,
-        (r) => O.some(r)
-      )
-    )
+    ._(map((r) => O.some(r)))
+    ._(getOrElse<L, Option<R>>(() => O.none))
     ._v();
 }
 

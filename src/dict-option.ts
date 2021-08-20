@@ -8,12 +8,8 @@ export function compact<S>(d: Dict<Option<NonNullable<S>>>): Dict<S> {
     ._(
       D.reduce({}, (acc, oVal, key) =>
         _(oVal)
-          ._(
-            O.fold(
-              () => acc,
-              (val) => ({ ...acc, [key]: val })
-            )
-          )
+          ._(O.map((val) => ({ ...acc, [key]: val })))
+          ._(O.getOrElse(() => acc))
           ._v()
       )
     )
