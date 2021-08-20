@@ -1,60 +1,33 @@
-import * as y from './type';
-
-export type ToTask<T> = (t: T) => y.Task<T>;
+import { Task } from './type';
 
 /**
  *
  * @param t
  * @returns
  */
-export function task<T>(t: T): y.Task<T> {
+export function task<T>(t: T): Task<T> {
   return () => Promise.resolve(t);
 }
 
 /**
  *
- * @param p
- * @returns
  */
-export function fromPromise<T>(p: Promise<T>): y.Task<T> {
-  return () => p;
-}
-
-/**
- *
- */
-export type Maps<TResult, T> = (t: y.Task<T>) => y.Task<TResult>;
+export type Fn<T, TResult> = (t: Task<T>) => TResult;
 
 /**
  *
  * @param f
  * @returns
  */
-export function map<TResult, T>(f: (t: T) => TResult): Maps<TResult, T> {
-  return (task) => () => task().then(f);
+export function map<T, TResult>(f: (t: T) => TResult): Fn<T, Task<TResult>> {
+  return (t) => () => t().then(f);
 }
 
 /**
  *
- * @param tasks
+ * @param t
  * @returns
  */
-export function parallel<T>(tasks: readonly y.Task<T>[]): y.Task<readonly T[]> {
-  return () => Promise.all(tasks.map((task) => task()));
-}
-
-// export function doEffect<T>(effect: (t: T) => void): Identity<Task<T>> {
-//   return (t) => () =>
-//     tDo(t).then((res) => {
-//       effect(res);
-//       return res;
-//     });
-// }
-/**
- *
- * @param e
- * @returns
- */
-export function flatten<T>(e: y.Task<y.Task<T>>): y.Task<T> {
-  return () => e().then((r) => r());
+export function chain<T, TResult>(f: (t: T) => Task<TResult>): Fn<T, Task<TResult>> {
+  return (t) => () => t().then((tr) => f(tr)());
 }

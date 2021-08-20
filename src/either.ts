@@ -108,22 +108,22 @@ export function chain<L, R, RResult>(
 /**
  *
  */
-export function chain2<L, R, RResult>(
-  f: (r: R) => Either<L, Either<L, RResult>>
-): Fn<L, R, Either<L, RResult>> {
-  return (e) =>
-    _(e)
-      ._(map(f))
-      ._(
-        chain(
-          match(
-            (l) => l,
-            (r) => r.right
-          )
-        )
-      )
-      ._v();
-}
+// export function chain2<L, R, RResult>(
+//   f: (r: R) => Either<L, Either<L, RResult>>
+// ): Fn<L, R, Either<L, RResult>> {
+//   return (e) =>
+//     _(e)
+//       ._(map(f))
+//       ._(
+//         chain(
+//           match(
+//             (l) => l,
+//             (r) => r.right
+//           )
+//         )
+//       )
+//       ._v();
+// }
 
 /**
  *

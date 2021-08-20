@@ -73,18 +73,18 @@ export function chain<T, S>(f: (s: S) => Option<T>): Fn<S, Option<T>> {
  * @param f
  * @returns
  */
-export function chain2<T, S>(f: (s: S) => Option<Option<T>>): Fn<S, Option<T>> {
-  return (o) =>
-    _(o)
-      ._(chain(f))
-      ._(
-        fold(
-          () => none,
-          (v) => v
-        )
-      )
-      ._v();
-}
+// export function chain2<T, S>(f: (s: S) => Option<Option<T>>): Fn<S, Option<T>> {
+//   return (o) =>
+//     _(o)
+//       ._(chain(f))
+//       ._(
+//         fold(
+//           () => none,
+//           (v) => v
+//         )
+//       )
+//       ._v();
+// }
 
 /**
  *
