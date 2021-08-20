@@ -2,18 +2,21 @@ import { Tuple2, Tuple3, Tuple4 } from './type';
 
 /**
  *
- * @param a
- * @param b
- * @returns
  */
 export function tuple2<A, B>(a: A, b: B): Tuple2<A, B> {
   return [a, b];
 }
 
+/**
+ *
+ */
 export function tuple3<A, B, C>(a: A, b: B, c: C): Tuple3<A, B, C> {
   return [a, b, c];
 }
 
+/**
+ *
+ */
 export function tuple4<A, B, C, D>(a: A, b: B, c: C, d: D): Tuple4<A, B, C, D> {
   return [a, b, c, d];
 }

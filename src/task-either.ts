@@ -5,20 +5,20 @@ import { Either, Left, Right, Task } from './type';
 
 /**
  *
- * @param t
+ * @param r
  * @returns
  */
-export function right<A>(t: A): Task<Right<A>> {
-  return T.task(E.right(t));
+export function right<R>(r: R): Task<Right<R>> {
+  return T.task(E.right(r));
 }
 
 /**
  *
- * @param t
+ * @param l
  * @returns
  */
-export function left<B>(t: B): Task<Left<B>> {
-  return T.task(E.left(t));
+export function left<L>(l: L): Task<Left<L>> {
+  return T.task(E.left(l));
 }
 
 /**

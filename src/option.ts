@@ -18,9 +18,9 @@ export const none: None = { _tag: 'None' };
 /**
  *
  */
-export function fromNullable<S>(t: NonNullable<S> | null | undefined): Option<S> {
+export function fromNullable<S>(s: NonNullable<S> | null | undefined): Option<S> {
   // eslint-disable-next-line no-null/no-null
-  return t === null || t === undefined ? none : some(t);
+  return s === null || s === undefined ? none : some(s);
 }
 
 /**
